@@ -4,7 +4,9 @@ export const getAllBudgetCategories: RequestHandler = (
     req: Request,
     res: Response,
     next: NextFunction
-) => {}
+) => {
+    res.status(200).send('it is working')
+}
 
 export const getBudgetCategory: RequestHandler = (
     req: Request,
