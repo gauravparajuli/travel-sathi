@@ -4,13 +4,11 @@ import {
     getAllBudgetCategories,
     getBudgetCategory,
     newBudgetCategory,
-    updateBudgetCategory,
-    deleteBudgetCategory,
     getAllExpenseCategories,
     getExpenseCategory,
     newExpenseCategory,
-    updateExpenseCategory,
-    deleteExpenseCategory,
+    updateCategory,
+    deleteCategory,
 } from '../controllers/categories'
 
 const router = Router()
@@ -19,14 +17,14 @@ const router = Router()
 router.get('/budget', getAllBudgetCategories)
 router.get('/budget/:id', getBudgetCategory)
 router.post('/budget', newBudgetCategory)
-router.patch('/budget/:id', updateBudgetCategory)
-router.delete('/budget/:id', deleteBudgetCategory)
+router.patch('/budget/:id', updateCategory)
+router.delete('/budget/:id', deleteCategory)
 
 // expense category routes here
 router.get('/expense', getAllExpenseCategories)
 router.get('/expense/:id', getExpenseCategory)
 router.post('/expense', newExpenseCategory)
-router.patch('/expense/:id', updateExpenseCategory)
-router.delete('/expense/:id', deleteExpenseCategory)
+router.patch('/expense/:id', updateCategory)
+router.delete('/expense/:id', deleteCategory)
 
 export default router
