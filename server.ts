@@ -3,7 +3,7 @@ import Mongoose from 'mongoose'
 
 import app from './app'
 
-dotenv.config
+dotenv.config()
 
 const PORT = process.env.PORT || 3001
 

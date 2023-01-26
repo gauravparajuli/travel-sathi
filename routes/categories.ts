@@ -1,5 +1,8 @@
 import { Router } from 'express'
 
+import isAuthenticated from '../middlewares/is-authenticated'
+import { isManager } from '../middlewares/is-authorized'
+
 import {
     getAllBudgetCategories,
     getBudgetCategory,
@@ -14,7 +17,7 @@ import {
 const router = Router()
 
 // budget category routes here
-router.get('/budget', getAllBudgetCategories)
+router.get('/budget', isAuthenticated, isManager, getAllBudgetCategories)
 router.get('/budget/:id', getBudgetCategory)
 router.post('/budget', newBudgetCategory)
 router.patch('/budget/:id', updateCategory)
