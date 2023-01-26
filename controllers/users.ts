@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express'
+import bcrypt from 'bcryptjs'
 
-import Category from '../models/Category'
+import User from '../models/User'
 import { CError } from '../types/CError'
-import validateCategory from '../validators/category-validator'
+import validateUser from '../validators/user-validator'
 
 export const newUser: RequestHandler = async (
     req: Request,
@@ -10,16 +11,30 @@ export const newUser: RequestHandler = async (
     next: NextFunction
 ) => {
     try {
-        const { error } = validateCategory(req.body)
+        const { error } = validateUser(req.body)
         if (error) {
             const err = new CError('input validation failed')
             err.statusCode = 422
             err.details = error.details
             throw err
         }
-        const budget = new Category({ ...req.body, category: 'budget' })
-        await budget.save()
-        res.status(200).json(budget)
+
+        const { email, password } = req.body
+
+        // check if user is already registered
+        const instance = await User.findOne({ email })
+        if (instance) {
+            const err = new CError('user already exists')
+            err.statusCode = 400
+            throw err
+        }
+
+        const hashedPassword = bcrypt.hashSync(password)
+
+        const newUser = new User({ email, password: hashedPassword })
+        await newUser.save()
+
+        res.status(200).json({ _id: newUser._id, email: newUser.email })
     } catch (error) {
         next(error)
     }
@@ -30,10 +45,10 @@ export const loginUser: RequestHandler = async (
     res: Response,
     next: NextFunction
 ) => {
-    try {
-        const records = await Category.find({ category: 'expense' })
-        res.status(200).json(records)
-    } catch (error) {
-        next(error)
-    }
+    // try {
+    //     const records = await Category.find({ category: 'expense' })
+    //     res.status(200).json(records)
+    // } catch (error) {
+    //     next(error)
+    // }
 }
