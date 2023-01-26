@@ -80,7 +80,7 @@ export const loginUser: RequestHandler = async (
         const accessToken = jwt.sign(
             {
                 id: userInstance._id,
-                isAdmin: userInstance.isManager,
+                isManager: userInstance.isManager,
             },
             process.env.JWT_SECRET_KEY || 'jwtsecretkey',
             { expiresIn: process.env.JWT_TOKEN_LIFE || '3d' }
