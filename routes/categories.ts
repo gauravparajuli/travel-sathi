@@ -18,10 +18,10 @@ const router = Router()
 
 // budget category routes here
 router.get('/budget', isAuthenticated, isManager, getAllBudgetCategories)
-router.get('/budget/:id', isManager, getBudgetCategory)
-router.post('/budget', isManager, newBudgetCategory)
-router.patch('/budget/:id', isManager, updateCategory)
-router.delete('/budget/:id', isManager, deleteCategory)
+router.get('/budget/:id', isAuthenticated, isManager, getBudgetCategory)
+router.post('/budget', isAuthenticated, isManager, newBudgetCategory)
+router.patch('/budget/:id', isAuthenticated, isManager, updateCategory)
+router.delete('/budget/:id', isAuthenticated, isManager, deleteCategory)
 
 // expense category routes here
 router.get('/expense', isAuthenticated, isStaff, getAllExpenseCategories)

@@ -12,7 +12,7 @@ export const getAllBudgets: RequestHandler = async (
     next: NextFunction
 ) => {
     try {
-        const records = await Budget.find({ category: 'budget' })
+        const records = await Budget.find()
         res.status(200).json(records)
     } catch (error) {
         next(error)
@@ -26,7 +26,7 @@ export const getBudget: RequestHandler = async (
 ) => {
     const id = req.params.id
     try {
-        const record = await Budget.findOne({ category: 'budget', _id: id })
+        const record = await Budget.findOne({ _id: id })
 
         if (!record) {
             const error = new CError('budget not found')
