@@ -6,7 +6,7 @@ const validator = (schema: any) => (payload: any) =>
 const budgetSchema = joi.object({
     title: joi.string().min(4).required(),
     amount: joi.number().required(),
-    category: joi.string().required(),
+    categoryId: joi.string().required(),
 })
 
 export default validator(budgetSchema)

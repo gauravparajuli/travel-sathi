@@ -1,9 +1,10 @@
-import { Response, NextFunction, RequestHandler } from 'express'
+import { Request, Response, NextFunction, RequestHandler } from 'express'
 import CRequest from '../types/CRequest'
 
 import Budget from '../models/Budget'
+import Category from '../models/Category'
 import { CError } from '../types/CError'
-import validateBudget from '../validators/category-validator'
+import validateBudget from '../validators/budget-validator'
 
 export const getAllBudgets: RequestHandler = async (
     req: Request,
@@ -11,7 +12,7 @@ export const getAllBudgets: RequestHandler = async (
     next: NextFunction
 ) => {
     try {
-        const records = await Category.find({ category: 'budget' })
+        const records = await Budget.find({ category: 'budget' })
         res.status(200).json(records)
     } catch (error) {
         next(error)
@@ -25,10 +26,10 @@ export const getBudget: RequestHandler = async (
 ) => {
     const id = req.params.id
     try {
-        const record = await Category.findOne({ category: 'budget', _id: id })
+        const record = await Budget.findOne({ category: 'budget', _id: id })
 
         if (!record) {
-            const error = new CError('category not found')
+            const error = new CError('budget not found')
             error.statusCode = 404
             throw error
         }
@@ -45,14 +46,27 @@ export const newBudget: RequestHandler = async (
     next: NextFunction
 ) => {
     try {
-        const { error } = validateCategory(req.body)
+        const { error } = validateBudget(req.body)
         if (error) {
             const err = new CError('input validation failed')
             err.statusCode = 422
             err.details = error.details
             throw err
         }
-        const budget = new Category({ ...req.body, category: 'budget' })
+
+        // check if supplied category actually exists
+        const catInstance = await Category.findOne({
+            category: 'budget',
+            _id: req.body.categoryId,
+        })
+        if (!catInstance) {
+            const err = new CError('no such category in budget')
+            err.statusCode = 404
+            err.details = error.details
+            throw err
+        }
+
+        const budget = new Category({ ...req.body, createdBy: req.user!._id })
         await budget.save()
         res.status(200).json(budget)
     } catch (error) {
@@ -67,7 +81,7 @@ export const deleteBudget: RequestHandler = async (
 ) => {
     const id = req.params.id
     try {
-        await Category.findByIdAndDelete(id)
+        await Budget.findByIdAndDelete(id)
         res.status(204).send()
     } catch (error) {
         next(error)
@@ -80,7 +94,7 @@ export const updateBudget: RequestHandler = async (
     next: NextFunction
 ) => {
     try {
-        const { error } = validateCategory(req.body)
+        const { error } = validateBudget(req.body)
         if (error) {
             const err = new CError('input validation failed')
             err.statusCode = 422
@@ -100,7 +114,7 @@ export const updateBudget: RequestHandler = async (
         )
 
         if (!record) {
-            const error = new CError('category not found')
+            const error = new CError('budget not found')
             error.statusCode = 404
             throw error
         }
