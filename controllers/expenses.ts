@@ -62,11 +62,10 @@ export const newExpense: RequestHandler = async (
         if (!catInstance) {
             const err = new CError('no such category in expense')
             err.statusCode = 404
-            err.details = error.details
             throw err
         }
 
-        const expense = new Expense({ ...req.body, createdBy: req.user!._id })
+        const expense = new Expense({ ...req.body, createdBy: req.user!.id })
         await expense.save()
         res.status(200).json(expense)
     } catch (error) {
@@ -104,7 +103,7 @@ export const updateExpense: RequestHandler = async (
 
         const id = req.params.id
 
-        const record = await Category.findByIdAndUpdate(
+        const record = await Expense.findByIdAndUpdate(
             id,
             { ...req.body },
             {

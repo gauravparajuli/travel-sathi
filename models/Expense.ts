@@ -6,7 +6,7 @@ const ExpenseSchema = new Schema(
             type: String,
             required: true,
         },
-        category: {
+        categoryId: {
             type: Schema.Types.ObjectId,
             required: true,
         },

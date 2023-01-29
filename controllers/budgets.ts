@@ -49,8 +49,8 @@ export const newBudget: RequestHandler = async (
         const { error } = validateBudget(req.body)
         if (error) {
             const err = new CError('input validation failed')
-            err.statusCode = 422
             err.details = error.details
+            err.statusCode = 422
             throw err
         }
 
@@ -62,11 +62,10 @@ export const newBudget: RequestHandler = async (
         if (!catInstance) {
             const err = new CError('no such category in budget')
             err.statusCode = 404
-            err.details = error.details
             throw err
         }
 
-        const budget = new Category({ ...req.body, createdBy: req.user!._id })
+        const budget = new Budget({ ...req.body, createdBy: req.user!.id })
         await budget.save()
         res.status(200).json(budget)
     } catch (error) {
@@ -104,7 +103,18 @@ export const updateBudget: RequestHandler = async (
 
         const id = req.params.id
 
-        const record = await Category.findByIdAndUpdate(
+        // check if supplied category actually exists
+        const catInstance = await Category.findOne({
+            category: 'budget',
+            _id: req.body.categoryId,
+        })
+        if (!catInstance) {
+            const err = new CError('no such category in budget')
+            err.statusCode = 404
+            throw err
+        }
+
+        const record = await Budget.findByIdAndUpdate(
             id,
             { ...req.body },
             {
