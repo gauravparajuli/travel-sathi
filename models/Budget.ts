@@ -14,6 +14,10 @@ const BudgetSchema = new Schema(
             type: Number,
             required: true,
         },
+        createdBy: {
+            required: true,
+            type: Schema.Types.ObjectId,
+        },
     },
     {
         timestamps: true,
